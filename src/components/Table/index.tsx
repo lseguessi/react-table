@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { WrapTable } from "./styles";
 
-const Table = ({ items, total, updatePage, columns }: any) => {
+const Table = ({ items, total, updatePage, columns, sortTable }: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(20);
   const [sortOrder, setSortOrder] = useState(true);
@@ -13,9 +13,10 @@ const Table = ({ items, total, updatePage, columns }: any) => {
       order = false;
     }
 
-    setSortOrder(order);
     setSortColumn(column);
-
+    setSortOrder(order);
+    
+    sortTable(column, order)
     console.log(order, column);
   };
 

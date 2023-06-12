@@ -21,7 +21,8 @@ export default function Home() {
 
   async function getData() {
     setLoading(true)
-    const resp = await fetch(`https://rickandmortyapi.com/api/character/?page=${pageNumber}`)
+    // const resp = await api.get(`/Goal/List?&StoreName=${storeName}&OrderBy=${columnTable}&IsDesc=${columnTableSorted}`)
+    const resp = await fetch(`https://rickandmortyapi.com/api/character/?page=${pageNumber}&ordenarPor=${setFilterColumnName}&IsDesc=${filterColumnSort}`)
     const data = await resp.json();
     setData(data);
     console.log(data)
@@ -32,9 +33,14 @@ export default function Home() {
     setPageNumber(pageNumber)
   }
 
+  function sortTable(columnName: string, columnOrder: boolean) {
+    setFilterColumnName(columnName)
+    setFilterColumnSort(columnOrder)
+  }
+
   useEffect(() => {
     getData()
-  }, [pageNumber])
+  }, [pageNumber, filterColumnName, filterColumnSort])
 
   return (
     <main>
@@ -44,6 +50,7 @@ export default function Home() {
           total={data.info.count} 
           updatePage={updatePage} 
           columns={columns} 
+          sortTable={sortTable}
         />
       </>)}
     </main>
