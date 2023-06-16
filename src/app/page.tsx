@@ -4,11 +4,14 @@ import TableComponent from "@/components/Table";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+
   const columns = [
-    { id: 1, name: "id" },
-    { id: 2, name: "name" },
-    { id: 3, name: "status" },
-    { id: 4, name: "editar" }
+    { id: 1, name: "id", label: "Id", type: '' },
+    { id: 2, name: "name", label: "Nome", type: '' },
+    { id: 3, name: "status", label: "Status", type: '' },
+    { id: 4, name: "species", label: "Espécies", type: '' },
+    { id: 4, name: "gender", label: "Genero", type: '' },
+    { id: 5, name: "editar", label: "Editar", type: 'link' }
   ]
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,6 +28,7 @@ export default function Home() {
     const resp = await fetch(`https://rickandmortyapi.com/api/character/?page=${pageNumber}&ordenarPor=${setFilterColumnName}&IsDesc=${filterColumnSort}`)
     const data = await resp.json();
     setData(data);
+    console.log(data);
     console.log(data)
     setLoading(false)
   }
@@ -46,11 +50,12 @@ export default function Home() {
     <main>
       {loading ? (<>Carregando...</>) : (<>
         <TableComponent 
-          items={data.results} 
+          data={data} 
           total={data.info.count} 
           updatePage={updatePage} 
-          columns={columns} 
           sortTable={sortTable}
+          columns={columns} 
+          isEditable={false}
         />
       </>)}
     </main>

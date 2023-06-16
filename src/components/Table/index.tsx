@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { WrapTable } from "./styles";
 
-const Table = ({ items, total, updatePage, columns, sortTable }: any) => {
+const Table = ({ data, total, updatePage, columns, sortTable, isEditable }: any) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(20);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortOrder, setSortOrder] = useState(true);
   const [sortColumn, setSortColumn] = useState("");
 
@@ -15,8 +15,8 @@ const Table = ({ items, total, updatePage, columns, sortTable }: any) => {
 
     setSortColumn(column);
     setSortOrder(order);
-    
-    sortTable(column, order)
+
+    sortTable(column, order);
     console.log(order, column);
   };
 
@@ -26,44 +26,37 @@ const Table = ({ items, total, updatePage, columns, sortTable }: any) => {
     updatePage(page);
   };
 
-  // Obtém os itens a serem exibidos com base na página atual
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
-
   return (
     <div>
       <WrapTable>
         <thead>
           <tr>
-            {columns.map((column: any) => {
-              return (
-                <th
-                  key={column.id}
-                  onClick={() => sortItems(column.name)}
-                  className="th-container"
-                >
-                  {column.name == 'editar' ? '' : column.name}
-                </th>
-              );
+            {Object.keys(data.results[0]).map((key) => {
+              let find = columns.find((coluna: any) => coluna.name == key);
+              if (find) {
+                return <th key={key} onClick={() => sortItems(find.name)}>{find.label}</th>;
+              } 
             })}
+            {isEditable ?? <th>Editar</th>}
+            
           </tr>
         </thead>
         <tbody>
-          {currentItems.map((item: any) => {
-            return (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.name}</td>
-                <td>{item.status}</td>
-                <td><a href={`${item.id}`}>Editar</a></td>
-              </tr>
-            )
-          })}
+          {data.results.map((item: any, index: any) => (
+            <tr key={index}>
+              {Object.keys(item).map((key) => {
+                const column = columns.find((coluna: any) => coluna.name === key);
+                if (column) {
+                  return <td key={key}>{item[key]}</td>;
+                } 
+                return null;
+              })}
+              <td onClick={() => alert(item.id)}>Editar </td>
+            </tr>
+          ))}
         </tbody>
       </WrapTable>
       <div>
-        {/* Cria os botões de paginação */}
         {Array.from(
           { length: Math.ceil(total / itemsPerPage) },
           (_, index) => index + 1
